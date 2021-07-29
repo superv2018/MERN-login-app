@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import laptopImg from '../.././assets/images/lappic.jpg'
-import { Link } from 'react-router-dom'
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -28,14 +28,13 @@ const useStyles = makeStyles(theme => ({
         return (
         <Card className={classes.card}>
         <Typography variant="h6" className={classes.title}>
-        Home Page
+        Home 
         </Typography>
-        <Link to="/users">Users</Link>
         <CardMedia className={classes.media}
         image={laptopImg} title="Unicorn Bicycle"/>
         <CardContent>
         <Typography variant="body2" component="p">
-        Welcome to the MERN Skeleton home page.
+        Welcome to MERN Stack
         </Typography>
         </CardContent>
         </Card>

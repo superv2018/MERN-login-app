@@ -5,11 +5,18 @@ import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
+import theme from './../client/theme'
+
 
 import template from './../template'
 import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.route'
 
+import MainRouter from '../client/MainRouter'
+import { StaticRouter } from 'react-router-dom'
 //comment devBundle out before production
 import devBundle from './devBundle'
 
@@ -35,6 +42,28 @@ app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')))
 app.use('/', userRoutes)
 app.use('/', authRoutes)
 
+app.get('*', (req, res) => {
+    const sheets = new ServerStyleSheets()
+    const context = {}
+    const markup = ReactDOMServer.renderToString(
+      sheets.collect(
+            <StaticRouter location={req.url} context={context}>
+              <ThemeProvider theme={theme}>
+                <MainRouter />
+              </ThemeProvider>
+            </StaticRouter>
+          )
+      )
+      if (context.url) {
+        return res.redirect(303, context.url)
+      }
+      const css = sheets.toString()
+      res.status(200).send(template({
+        markup: markup,
+        css: css
+      }))
+  })
+
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).json({"error": err.name + ": " + err.message})
@@ -44,9 +73,9 @@ app.use((err, req, res, next) => {
     }
 })
 
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
     res.status(200).send(template())
-})
+}) */
 
 
 export default app;
